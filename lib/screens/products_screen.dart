@@ -8,39 +8,50 @@ class ProductsScreen extends StatefulWidget {
 }
 
 class _ProductsScreenState extends State<ProductsScreen> {
+  final List<Map<String, String>> _products = [
+    {
+      'img': 'imagenes/sudadera1.png',
+      'title': 'Sudadera Clásica',
+      'talla': 'M',
+    },
+    {
+      'img': 'imagenes/sudadera2.png',
+      'title': 'Sudadera con Capucha',
+      'talla': 'L',
+    },
+    {
+      'img': 'imagenes/sudadera1.png',
+      'title': 'Sudadera Oversize',
+      'talla': 'XL',
+    },
+    {
+      'img': 'imagenes/sudadera1.png',
+      'title': 'Sudadera Deportiva',
+      'talla': 'S',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        const SizedBox(height: 10),
-        imageCard(),
-        Center(
-          child: ElevatedButton(
-            onPressed: () {
-              _showAddSudaderaDialog(context);
-            },
-            style: ElevatedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: Colors.blue,
-              padding: const EdgeInsets.symmetric(
-                vertical: 15.0,
-                horizontal: 30.0,
-              ),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(25.0),
-              ),
-              elevation: 5,
-              shadowColor: Colors.blueGrey.shade600,
+    return Scaffold(
+      appBar: AppBar(title: const Text('Productos')),
+      body: ListView(
+        children: [
+          const SizedBox(height: 10),
+          _imageCard(),
+          Center(
+            child: ElevatedButton(
+              onPressed: () => _showAddSudaderaDialog(context),
+              child: const Text('Agregar sudadera'),
             ),
-            child: const Text('Agregar sudadera'),
           ),
-        ),
-        const SizedBox(height: 30),
-      ],
+          const SizedBox(height: 30),
+        ],
+      ),
     );
   }
 
-  Widget imageCard() {
+  Widget _imageCard() {
     return Container(
       margin: const EdgeInsets.all(20),
       child: Column(
@@ -54,50 +65,36 @@ class _ProductsScreenState extends State<ProductsScreen> {
           ),
           const SizedBox(height: 20.0),
           Table(
-            children: [
-              TableRow(
-                children: [
-                  _buildProductTile(
-                    'assets/images/sudaderaTortuga.jpeg',
-                    'Sudadera',
-                    'M',
-                    1,
-                  ),
-                  _buildProductTile(
-                    'assets/images/sudaderaTronco.jpeg',
-                    'Sudadera',
-                    'L',
-                    2,
-                  ),
-                ],
-              ),
-              TableRow(
-                children: [
-                  _buildProductTile(
-                    'assets/images/sudaderaArbol.jpeg',
-                    'Sudadera',
-                    'XL',
-                    3,
-                  ),
-                ],
-              ),
-            ],
+            children: List.generate(2, (i) {
+              return TableRow(
+                children: List.generate(2, (j) {
+                  int index = i * 2 + j;
+                  if (index >= _products.length) return const SizedBox();
+                  final product = _products[index];
+                  return GestureDetector(
+                    onTap:
+                        () => _showConfirmationDialog(
+                          context,
+                          product['img']!,
+                          product['title']!,
+                          product['talla']!,
+                        ),
+                    child: _imageContainer(
+                      product['img']!,
+                      product['title']!,
+                      product['talla']!,
+                    ),
+                  );
+                }),
+              );
+            }),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildProductTile(String img, String title, String talla, int id) {
-    return GestureDetector(
-      onTap: () {
-        _showConfirmationDialog(context, img, title, talla, id);
-      },
-      child: imageContainer(img, title, talla),
-    );
-  }
-
-  Widget imageContainer(String imagePath, String title1, String talla) {
+  Widget _imageContainer(String img, String title, String talla) {
     return SizedBox(
       width: 150,
       height: 200,
@@ -107,22 +104,22 @@ class _ProductsScreenState extends State<ProductsScreen> {
         ),
         elevation: 10,
         color: Colors.lightBlue[50],
-        child: Container(
+        child: Padding(
           padding: const EdgeInsets.all(10.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
                 child: Image.asset(
-                  imagePath,
-                  width: 120,
-                  height: 120,
+                  img,
+                  width: 100,
+                  height: 100,
                   fit: BoxFit.cover,
                 ),
               ),
               const SizedBox(height: 8),
-              Text(title1, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
               Text("Talla $talla"),
             ],
           ),
@@ -133,51 +130,25 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void _showConfirmationDialog(
     BuildContext context,
-    String imagePath,
-    String title1,
+    String img,
+    String title,
     String talla,
-    int id,
   ) {
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: const Text(
-              'Confirmación',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-            ),
+            title: const Text('Confirmación'),
             content: const Text(
               '¿Deseas agregar esta sudadera a tu colección?',
-              style: TextStyle(fontSize: 18),
             ),
             actions: [
               TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // Guardar o navegar
-                  Navigator.of(context).pop();
-                },
+                onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Agregar'),
               ),
             ],
@@ -187,21 +158,14 @@ class _ProductsScreenState extends State<ProductsScreen> {
 
   void _showAddSudaderaDialog(BuildContext context) {
     final _formKey = GlobalKey<FormState>();
-    String? _title1;
+    String? _title;
     String? _talla;
 
     showDialog(
       context: context,
       builder:
           (_) => AlertDialog(
-            backgroundColor: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-            title: const Text(
-              'Agregar sudadera',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
-            ),
+            title: const Text('Agregar sudadera'),
             content: Form(
               key: _formKey,
               child: Column(
@@ -214,7 +178,7 @@ class _ProductsScreenState extends State<ProductsScreen> {
                             value == null || value.isEmpty
                                 ? 'Por favor ingresa un nombre'
                                 : null,
-                    onSaved: (value) => _title1 = value,
+                    onSaved: (value) => _title = value,
                   ),
                   TextFormField(
                     decoration: const InputDecoration(labelText: 'Talla'),
@@ -230,28 +194,20 @@ class _ProductsScreenState extends State<ProductsScreen> {
             ),
             actions: [
               TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
                 onPressed: () => Navigator.of(context).pop(),
                 child: const Text('Cancelar'),
               ),
               TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                ),
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
                     _formKey.currentState!.save();
-                    // Aquí podrías guardar en una lista
+                    setState(() {
+                      _products.add({
+                        'img': 'imagenes/sudadera1.png',
+                        'title': _title!,
+                        'talla': _talla!,
+                      });
+                    });
                     Navigator.of(context).pop();
                   }
                 },

@@ -48,7 +48,14 @@ class _LoginScreenState extends State<LoginScreen> {
         border: Border.all(color: AppTheme.iconColor, width: 2),
         shape: BoxShape.circle,
       ),
-      child: const Icon(Icons.person, color: AppTheme.iconColor, size: 120.0),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/logo.jpeg', // Asegúrate de que la ruta sea correcta
+          width: 200.0,
+          height: 200.0,
+          fit: BoxFit.cover, // Ajusta la imagen dentro del círculo
+        ),
+      ),
     );
   }
 
@@ -85,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
         final route2 = MaterialPageRoute(
           builder: (context) {
-            return const MenuPrincipal();
+            return const MenuScreen();
           },
         );
         Navigator.push(context, route2);

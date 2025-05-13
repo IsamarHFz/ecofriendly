@@ -46,7 +46,14 @@ class _LoginPageState extends State<HomeScreen> {
         border: Border.all(color: AppTheme.iconColor, width: 2),
         shape: BoxShape.circle,
       ),
-      child: const Icon(Icons.person, color: AppTheme.iconColor, size: 120.0),
+      child: ClipOval(
+        child: Image.asset(
+          'assets/images/logo.jpeg', // Asegúrate de que la ruta sea correcta
+          width: 120.0,
+          height: 120.0,
+          fit: BoxFit.cover, // Ajusta la imagen dentro del círculo
+        ),
+      ),
     );
   }
 

@@ -1,142 +1,117 @@
 import 'package:ecofriendly/screens/base_screen.dart';
-import 'package:ecofriendly/screens/products_screen.dart';
-import 'package:ecofriendly/screens/select_product.dart';
-import 'package:ecofriendly/theme/app_theme.dart';
+import 'package:ecofriendly/screens/product_detail_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:ecofriendly/theme/app_theme.dart';
 
-class MenuPrincipal extends StatefulWidget {
-  const MenuPrincipal({super.key});
+class MenuScreen extends StatelessWidget {
+  const MenuScreen({super.key});
 
-  @override
-  State<MenuPrincipal> createState() => _MenuPrincipalState();
-}
-
-class _MenuPrincipalState extends State<MenuPrincipal> {
-  int selectedIndex = 0;
+  final List<Map<String, String>> products = const [
+    {
+      'image': 'assets/images/sudaderaArbol.jpeg',
+      'title': 'Sudadera Clásica',
+      'tallas': 'M, L',
+      'precio': '350',
+    },
+    {
+      'image': 'assets/images/sudaderaTronco.jpeg',
+      'title': 'Sudadera Clásica',
+      'tallas': 'M, L',
+      'precio': '350',
+    },
+    {
+      'image': 'assets/images/sudaderaTortuga.jpeg',
+      'title': 'Sudadera Clásica',
+      'tallas': 'M, L',
+      'precio': '350',
+    },
+  ];
 
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      body: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: ListView(children: [imageCard()]),
-      ),
-      selectedIndex:
-          selectedIndex, // Establecer el índice seleccionado para el BottomNavigationBar
-    );
-  }
-
-  Widget imageCard() {
-    return Container(
-      margin: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Center(
-            child: Text(
-              'Ecofriendly',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-            ),
-          ),
-          const Center(
-            child: Text(
-              'Bienvenid@',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24.0),
-            ),
-          ),
-          const SizedBox(height: 20.0),
-          Table(
-            children: [
-              TableRow(
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const SelectContainer(),
-                        ),
-                      );
-                    },
-                    child: imageContainer(
-                      'assets/images/sudaderaTortuga.png',
-                      'Sudadera',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProductsScreen(),
-                        ),
-                      );
-                    },
-                    child: imageContainer(
-                      'assets/images/sudaderaTronco.jpeg',
-                      'Sudadera',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProductsScreen(),
-                        ),
-                      );
-                    },
-                    child: imageContainer(
-                      'assets/images/sudaderaArbol.jpegg',
-                      'Sudadera',
-                    ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const ProductsScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+      selectedIndex: 0,
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          children: [
+            const Text(
+              'Seleccionar contenedor',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textColor,
               ),
-            ],
-          ),
-        ],
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: GridView.builder(
+                itemCount: products.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio:
+                      0.85, // Ajusté el aspect ratio para hacer las celdas un poco más grandes
+                ),
+                itemBuilder: (context, index) {
+                  final product = products[index];
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (_) => ProductDetailScreen(
+                                title: product['title']!,
+                                imagePath: product['image']!,
+                                tallas: product['tallas']!,
+                                precio: product['precio']!,
+                              ),
+                        ),
+                      );
+                    },
+                    child: imageContainer(product['image']!, product['title']!),
+                  );
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 
-  Widget imageContainer(String imagePath, String title1) {
-    return SizedBox(
-      width: 150,
-      height: 200,
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20.0),
-        ),
-        elevation: 10,
-        color: AppTheme.iconColor,
-        child: Container(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ClipRRect(
+  Widget imageContainer(String imagePath, String label) {
+    return Card(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+      elevation: 10,
+      color: AppTheme.iconColor,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Expanded(
+              child: ClipRRect(
                 borderRadius: BorderRadius.circular(20.0),
-                child: Image(
-                  width: 120,
-                  height: 120,
-                  image: AssetImage(imagePath),
+                child: Image.asset(
+                  imagePath,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
                 ),
               ),
-              const SizedBox(height: 8),
-              Text(title1, style: const TextStyle(fontWeight: FontWeight.bold)),
-            ],
-          ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                color: AppTheme.textColor,
+              ),
+            ),
+          ],
         ),
       ),
     );

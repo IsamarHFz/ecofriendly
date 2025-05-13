@@ -1,6 +1,8 @@
+import 'package:ecofriendly/screens/contact_screen.dart';
 import 'package:ecofriendly/screens/home_screen.dart';
 import 'package:ecofriendly/screens/menu_screen.dart';
 import 'package:ecofriendly/screens/products_screen.dart';
+import 'package:ecofriendly/screens/profie_screen.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -21,13 +23,13 @@ class BaseScreenState extends State<BaseScreen> {
     late Widget screen;
     switch (index) {
       case 0:
-        screen = const MenuPrincipal();
+        screen = const MenuScreen();
         break;
       case 1:
         screen = const ProductsScreen();
         break;
       case 2:
-        screen = const MenuPrincipal();
+        screen = const MenuScreen();
         break;
     }
     Navigator.pushReplacement(
@@ -52,7 +54,7 @@ class BaseScreenState extends State<BaseScreen> {
           child: ListView(
             children: <Widget>[
               const DrawerHeader(
-                decoration: AppTheme.foundColor,
+                decoration: BoxDecoration(color: AppTheme.buttonColor),
                 child: Text(
                   'Menú',
                   style: TextStyle(
@@ -69,7 +71,7 @@ class BaseScreenState extends State<BaseScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ProductsScreen(),
+                      builder: (context) => const ContactScreen(),
                     ),
                   );
                 },
@@ -81,7 +83,7 @@ class BaseScreenState extends State<BaseScreen> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const MenuPrincipal(),
+                      builder: (context) => const ProfileScreen(),
                     ),
                   );
                 },
