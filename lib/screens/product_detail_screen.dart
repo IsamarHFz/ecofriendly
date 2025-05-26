@@ -1,4 +1,8 @@
+import 'package:ecofriendly/models/cart.dart';
+import 'package:ecofriendly/models/cart_item.dart';
+import 'package:ecofriendly/models/sweatshirt.dart';
 import 'package:ecofriendly/screens/base_screen.dart';
+import 'package:ecofriendly/screens/order_form_dialog.dart';
 import 'package:ecofriendly/screens/ticket_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
@@ -87,29 +91,55 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder:
-                                      (context) => const TicketDigital(
-                                        nombreCliente: 'Yaneth',
-                                        gradoyGrupo: '6ºA',
-                                        numeroTelefono: '1234567890',
-                                        items: [
-                                          {
-                                            'nombre': 'Producto ejemplo',
-                                            'precio': 350.00,
-                                            'total': 350.00,
-                                          },
-                                        ],
-                                        subtotal: 350.00,
-                                        total: 350.00,
-                                        totalPagado: 350.00,
-                                        metodoPago: '',
-                                        fecha: '2025-05-13',
-                                      ),
-                                ),
+                              Navigator.pop(context); // Cierra el diálogo
+                              showDialog(
+                                context: context,
+                                builder:
+                                    (context) => OrderFormDialog(
+                                      onSubmit: (nombre, grado, telefono) {
+                                        // Crear objeto temporal del producto
+                                        final sweatshirt = Sweatshirt(
+                                          id: title,
+                                          name: title,
+                                          price: double.parse(precio),
+                                          image: imagePath,
+                                        );
+
+                                        // Agregar al carrito
+                                        final cartItem = CartItem(
+                                          sweatshirt: sweatshirt,
+                                        );
+                                        Cart().addItem(cartItem);
+
+                                        // Navegar al ticket
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder:
+                                                (context) => TicketDigital(
+                                                  nombreCliente: nombre,
+                                                  gradoyGrupo: grado,
+                                                  numeroTelefono: telefono,
+                                                  items: [
+                                                    {
+                                                      'nombre': sweatshirt.name,
+                                                      'precio':
+                                                          sweatshirt.price,
+                                                      'total': sweatshirt.price,
+                                                    },
+                                                  ],
+                                                  subtotal: sweatshirt.price,
+                                                  total: sweatshirt.price,
+                                                  totalPagado: sweatshirt.price,
+                                                  metodoPago: '',
+                                                  fecha: DateTime.now()
+                                                      .toString()
+                                                      .substring(0, 10),
+                                                ),
+                                          ),
+                                        );
+                                      },
+                                    ),
                               );
                             },
                             child: const Text("Sí"),

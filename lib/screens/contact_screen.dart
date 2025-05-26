@@ -252,7 +252,7 @@ class _ContactFormState extends State<ContactForm> {
               onPressed: _submitForm,
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
-                backgroundColor: Colors.blue,
+                backgroundColor: const Color.fromARGB(255, 10, 109, 15),
                 padding: const EdgeInsets.symmetric(vertical: 15.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10.0),

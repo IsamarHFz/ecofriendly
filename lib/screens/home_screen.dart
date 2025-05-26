@@ -48,15 +48,16 @@ class _LoginPageState extends State<HomeScreen> {
       ),
       child: ClipOval(
         child: Image.asset(
-          'assets/images/logo.jpeg',
+          'assets/images/logo.jpeg', // Asegúrate de que la ruta sea correcta
           width: 120.0,
           height: 120.0,
-          fit: BoxFit.cover,
+          fit: BoxFit.cover, // Ajusta la imagen dentro del círculo
         ),
       ),
     );
   }
 
+  // Widgets de Usuario y contraseña
   Future<Widget> _inputField(
     String hintText,
     TextEditingController controller, {
@@ -79,6 +80,7 @@ class _LoginPageState extends State<HomeScreen> {
     );
   }
 
+  // Botón de inicio de sesión
   Widget _signInButton() {
     return ElevatedButton(
       onPressed: () {
