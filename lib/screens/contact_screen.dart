@@ -32,40 +32,24 @@ class ContactScreen extends StatelessWidget {
                 children: [
                   const ListTile(
                     title: Text(
-                      'Dirección:',
+                      'Grado y grupo:',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    subtitle: Text(
-                      'Calle 1234, Xaloztoc, Tlaxcala',
-                      style: TextStyle(fontSize: 20),
-                    ),
+                    subtitle: Text('6ºD', style: TextStyle(fontSize: 20)),
                   ),
                   const ListTile(
                     title: Text(
-                      'Teléfono:',
+                      'Escribe a uno de estos números de teléfono:',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     subtitle: Text(
-                      '+52 123456789',
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                  const ListTile(
-                    title: Text(
-                      'Correo Electrónico:',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    subtitle: Text(
-                      '12345678@gmail.com',
+                      '+52 241 112 4498 o +52 241 114 9047',
                       style: TextStyle(fontSize: 20),
                     ),
                   ),
@@ -87,7 +71,9 @@ class ContactScreen extends StatelessWidget {
                             color: Colors.blue,
                           ),
                           onPressed:
-                              () => _launchURL('https://www.facebook.com/'),
+                              () => _launchURL(
+                                'https://www.facebook.com/share/15HHPNS6hp/?mibextid=wwXIfr',
+                              ),
                         ),
                         IconButton(
                           icon: const FaIcon(
@@ -95,7 +81,9 @@ class ContactScreen extends StatelessWidget {
                             color: Color.fromARGB(255, 235, 40, 193),
                           ),
                           onPressed:
-                              () => _launchURL('https://www.instagram.com/'),
+                              () => _launchURL(
+                                'https://www.instagram.com/eco_friendly6?igsh=NmRlbnpnZjAyaXN1',
+                              ),
                         ),
                         IconButton(
                           icon: const FaIcon(
@@ -105,16 +93,11 @@ class ContactScreen extends StatelessWidget {
                           onPressed:
                               () => _launchURL('https://wa.me/2462211081'),
                         ),
-                        IconButton(
-                          icon: const FaIcon(
-                            FontAwesomeIcons.twitter,
-                            color: Colors.lightBlue,
-                          ),
-                          onPressed: () => _launchURL('https://twitter.com/'),
-                        ),
                       ],
                     ),
                   ),
+                  const SizedBox(height: 20),
+                  ContactForm(), // Formulario dentro del ExpansionTile
                 ],
               ),
               const SizedBox(height: 20),
@@ -131,37 +114,6 @@ class ContactScreen extends StatelessWidget {
     } else {
       throw 'Could not launch $url';
     }
-  }
-
-  Widget _buildExpansionTile(String title, String content) {
-    return ExpansionTile(
-      title: Text(
-        title,
-        style: const TextStyle(
-          fontSize: 20.0,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ),
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8.0),
-            color: Colors.transparent,
-            // border: Border.all(color: const Color.fromARGB(72, 0, 0, 0)),
-          ),
-          padding: const EdgeInsets.all(16.0),
-          child: Text(
-            content,
-            style: const TextStyle(
-              fontSize: 18.0,
-              color: Color.fromARGB(255, 3, 3, 3),
-            ),
-          ),
-        ),
-        const SizedBox(height: 20.0),
-      ],
-    );
   }
 }
 
@@ -190,7 +142,6 @@ class _ContactFormState extends State<ContactForm> {
       final email = _emailController.text;
       final message = _messageController.text;
 
-      // Aquí solo se muestra un mensaje, ya no se guarda en Firebase
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Formulario enviado con éxito')),
       );
@@ -217,6 +168,7 @@ class _ContactFormState extends State<ContactForm> {
         ],
       ),
       padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.only(top: 10.0),
       child: Form(
         key: _formKey,
         child: Column(

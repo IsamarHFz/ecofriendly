@@ -32,7 +32,7 @@ class TicketDigital extends StatelessWidget {
     final dateFormat = DateFormat('dd/MM/yyyy');
 
     return BaseScreen(
-      selectedIndex: 0,
+      // selectedIndex: 0,
       body: SingleChildScrollView(
         // Envuelvo todo el contenido en un SingleChildScrollView
         child: Padding(

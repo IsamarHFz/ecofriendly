@@ -1,19 +1,25 @@
+import 'package:ecofriendly/screens/menu_screen.dart';
+import 'package:ecofriendly/screens/profile_screen.dart';
+import 'package:flutter/material.dart';
+import 'package:ecofriendly/screens/cart_screen.dart';
 import 'package:ecofriendly/screens/contact_screen.dart';
 import 'package:ecofriendly/screens/home_screen.dart';
-import 'package:ecofriendly/screens/menu_screen.dart';
-import 'package:ecofriendly/screens/products_screen.dart';
-import 'package:ecofriendly/screens/profie_screen.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
-import 'package:flutter/material.dart';
 
 class BaseScreen extends StatefulWidget {
   final Widget body;
   final int selectedIndex;
+  final String title;
 
-  const BaseScreen({super.key, required this.body, this.selectedIndex = 0});
+  const BaseScreen({
+    super.key,
+    required this.body,
+    this.selectedIndex = 0,
+    this.title = '',
+  });
 
   @override
-  BaseScreenState createState() => BaseScreenState();
+  State<BaseScreen> createState() => BaseScreenState();
 }
 
 class BaseScreenState extends State<BaseScreen> {
@@ -26,16 +32,22 @@ class BaseScreenState extends State<BaseScreen> {
         screen = const MenuScreen();
         break;
       case 1:
-        screen = const ProductsScreen();
+        screen = CartScreen();
         break;
       case 2:
-        screen = const MenuScreen();
+        screen = const ProfileScreen();
         break;
     }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(
-        builder: (context) => BaseScreen(body: screen, selectedIndex: index),
+        builder:
+            (context) => BaseScreen(
+              body: screen,
+              selectedIndex: index,
+              title: widget.title,
+            ),
       ),
     );
   }
@@ -47,8 +59,10 @@ class BaseScreenState extends State<BaseScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
-          title: const Text(""),
+          title: Text(widget.title),
           backgroundColor: Colors.transparent,
+          elevation: 0,
+          iconTheme: const IconThemeData(color: Colors.black),
         ),
         drawer: Drawer(
           child: ListView(
@@ -56,7 +70,7 @@ class BaseScreenState extends State<BaseScreen> {
               const DrawerHeader(
                 decoration: BoxDecoration(color: AppTheme.buttonColor),
                 child: Text(
-                  'Menú',
+                  '',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 24,
@@ -91,25 +105,28 @@ class BaseScreenState extends State<BaseScreen> {
               ListTile(
                 leading: const Icon(Icons.exit_to_app),
                 title: const Text('Cerrar sesión'),
-                onTap: () async {
+                onTap: () {
                   Navigator.of(context).pushAndRemoveUntil(
                     MaterialPageRoute(builder: (context) => const HomeScreen()),
-                    (Route<dynamic> route) => false,
+                    (route) => false,
                   );
                 },
               ),
             ],
           ),
         ),
-        body: widget.body,
+        body: Padding(
+          padding: const EdgeInsets.only(top: 12.0),
+          child: widget.body,
+        ),
         bottomNavigationBar: BottomNavigationBar(
           currentIndex: widget.selectedIndex,
           onTap: (index) => openScreen(context, index),
           backgroundColor: Colors.white,
-          selectedItemColor: Colors.blueAccent,
+          selectedItemColor: Colors.green,
           unselectedItemColor: Colors.grey,
           selectedLabelStyle: const TextStyle(
-            color: Colors.blueAccent,
+            color: Color.fromARGB(255, 18, 88, 20),
             fontWeight: FontWeight.bold,
           ),
           unselectedLabelStyle: const TextStyle(color: Colors.grey),

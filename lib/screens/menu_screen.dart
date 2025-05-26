@@ -6,22 +6,37 @@ import 'package:ecofriendly/theme/app_theme.dart';
 class MenuScreen extends StatelessWidget {
   const MenuScreen({super.key});
 
-  final List<Map<String, String>> products = const [
+  final List<Map<String, dynamic>> products = const [
     {
-      'image': 'assets/images/sudaderaArbol.jpeg',
-      'title': 'Sudadera Clásica',
+      'images': [
+        'assets/images/sudaderaArbol.jpeg',
+        'assets/images/sudaderaA.jpg',
+        'assets/images/manga.jpg',
+        'assets/images/sudaderaF2.jpg',
+      ],
+      'title': 'Sudadera Árbol',
       'tallas': 'M, L',
       'precio': '350',
     },
     {
-      'image': 'assets/images/sudaderaTronco.jpeg',
-      'title': 'Sudadera Clásica',
+      'images': [
+        'assets/images/sudaderaTronco.jpeg',
+        'assets/images/sudaderaT2.jpg',
+        'assets/images/manga.jpg',
+        'assets/images/sudaderaF2.jpg',
+      ],
+      'title': 'Sudadera Tronco',
       'tallas': 'M, L',
       'precio': '350',
     },
     {
-      'image': 'assets/images/sudaderaTortuga.jpeg',
-      'title': 'Sudadera Clásica',
+      'images': [
+        'assets/images/sudaderaTortuga.jpeg',
+        'assets/images/sudaderaT.jpg',
+        'assets/images/manga.jpg',
+        'assets/images/sudaderaF2.jpg',
+      ],
+      'title': 'Sudadera Tortuga',
       'tallas': 'M, L',
       'precio': '350',
     },
@@ -31,6 +46,7 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseScreen(
       selectedIndex: 0,
+      title: 'Menú', //
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -51,11 +67,11 @@ class MenuScreen extends StatelessWidget {
                   crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio:
-                      0.85, // Ajusté el aspect ratio para hacer las celdas un poco más grandes
+                  childAspectRatio: 0.85,
                 ),
                 itemBuilder: (context, index) {
                   final product = products[index];
+                  final images = List<String>.from(product['images']);
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -63,15 +79,16 @@ class MenuScreen extends StatelessWidget {
                         MaterialPageRoute(
                           builder:
                               (_) => ProductDetailScreen(
-                                title: product['title']!,
-                                imagePath: product['image']!,
-                                tallas: product['tallas']!,
-                                precio: product['precio']!,
+                                title: product['title'],
+                                imagePath: images[0],
+                                images: images,
+                                tallas: product['tallas'],
+                                precio: product['precio'],
                               ),
                         ),
                       );
                     },
-                    child: imageContainer(product['image']!, product['title']!),
+                    child: imageContainer(images[0], product['title']),
                   );
                 },
               ),

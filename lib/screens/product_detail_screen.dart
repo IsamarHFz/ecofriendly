@@ -6,6 +6,7 @@ import 'package:ecofriendly/theme/app_theme.dart';
 class ProductDetailScreen extends StatelessWidget {
   final String title;
   final String imagePath;
+  final List<String> images;
   final String tallas;
   final String precio;
 
@@ -13,6 +14,7 @@ class ProductDetailScreen extends StatelessWidget {
     super.key,
     required this.title,
     required this.imagePath,
+    required this.images,
     required this.tallas,
     required this.precio,
   });
@@ -20,7 +22,6 @@ class ProductDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseScreen(
-      selectedIndex: 0,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -37,16 +38,14 @@ class ProductDetailScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
 
-            // Galería de 3 imágenes centradas
+            // Galería de imágenes dinámicas
             SizedBox(
               height: 80,
-              child: ListView(
+              child: ListView.builder(
                 scrollDirection: Axis.horizontal,
-                children: [
-                  _buildImagePreview('assets/images/sudaderaArbol.jpeg'),
-                  _buildImagePreview('assets/images/sudaderaTronco.jpeg'),
-                  _buildImagePreview('assets/images/sudaderaTortuga.jpeg'),
-                ],
+                itemCount: images.length,
+                itemBuilder:
+                    (context, index) => _buildImagePreview(images[index]),
               ),
             ),
 
@@ -88,7 +87,7 @@ class ProductDetailScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context); // Cerrar alerta
+                              Navigator.pop(context);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -107,10 +106,8 @@ class ProductDetailScreen extends StatelessWidget {
                                         subtotal: 350.00,
                                         total: 350.00,
                                         totalPagado: 350.00,
-                                        metodoPago:
-                                            '', // Método de pago eliminado
-                                        fecha:
-                                            '2025-05-13', // Agrega una fecha válida
+                                        metodoPago: '',
+                                        fecha: '2025-05-13',
                                       ),
                                 ),
                               );
@@ -143,17 +140,10 @@ class ProductDetailScreen extends StatelessWidget {
 
   Widget _buildImagePreview(String path) {
     return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 8.0,
-      ), // Espacio entre imágenes
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(10),
-        child: Image.asset(
-          path,
-          width: 80,
-          height: 80,
-          fit: BoxFit.cover, // Ajuste de las imágenes
-        ),
+        child: Image.asset(path, width: 80, height: 80, fit: BoxFit.cover),
       ),
     );
   }
