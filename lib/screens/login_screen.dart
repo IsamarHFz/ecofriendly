@@ -50,16 +50,15 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: ClipOval(
         child: Image.asset(
-          'assets/images/logo.jpeg', // Asegúrate de que la ruta sea correcta
+          'assets/images/logo.jpeg',
           width: 200.0,
           height: 200.0,
-          fit: BoxFit.cover, // Ajusta la imagen dentro del círculo
+          fit: BoxFit.cover,
         ),
       ),
     );
   }
 
-  // Widgets de Usuario y contraseña
   Widget _inputField(
     String hintText,
     TextEditingController controller, {

@@ -13,7 +13,7 @@ class SweatshirtCard extends StatelessWidget {
     return Card(
       child: Column(
         children: [
-          Image.network(sweatshirt.imageUrl),
+          Image.network(sweatshirt.imageUrl ?? ''),
           Text(sweatshirt.name),
           Text('\$${sweatshirt.price}'),
           ElevatedButton(

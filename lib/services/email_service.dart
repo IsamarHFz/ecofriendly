@@ -9,14 +9,14 @@ Future<void> sendOrderEmail(
   String precio,
 ) async {
   String username = 'tuemail@gmail.com';
-  String password = 'tu-contraseña-app'; // contraseña app Gmail
+  String password = 'tu-contraseña-app';
 
   final smtpServer = gmail(username, password);
 
   final message =
       Message()
         ..from = Address(username, 'Tu App Ecofriendly')
-        ..recipients.add(username) // se envía a ti mismo
+        ..recipients.add(username)
         ..subject = 'Nuevo pedido de $nombre'
         ..text =
             'Cliente: $nombre\nTeléfono: $telefono\nEmail: $email\nProducto: $producto\nPrecio: $precio';

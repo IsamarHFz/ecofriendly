@@ -10,4 +10,6 @@ class Sweatshirt {
     required this.price,
     required this.image,
   });
+
+  String? get imageUrl => null;
 }
