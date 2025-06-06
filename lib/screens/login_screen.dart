@@ -1,4 +1,5 @@
 import 'package:ecofriendly/screens/menu_screen.dart';
+import 'package:ecofriendly/services/firebase_auth_services.dart';
 import 'package:flutter/material.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+  final FirebaseAuthService authService = FirebaseAuthService();
 
   @override
   void initState() {
@@ -106,23 +108,26 @@ class _LoginScreenState extends State<LoginScreen> {
     return ElevatedButton(
       onPressed: () async {
         try {
-          await FirebaseAuth.instance.signInWithEmailAndPassword(
-            email: emailController.text.trim(),
-            password: passwordController.text.trim(),
-          );
-          // Guarda las credenciales después de iniciar sesión correctamente
-          await _saveCredentials(
+          final user = await authService.signInWithEmailAndPassword(
             emailController.text.trim(),
             passwordController.text.trim(),
           );
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const MenuScreen()),
+
+          if (user != null) {
+            await _saveCredentials(
+              emailController.text.trim(),
+              passwordController.text.trim(),
+            );
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const MenuScreen()),
+            );
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Error al iniciar sesión')),
           );
-        } on FirebaseAuthException catch (e) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
         }
       },
       style: ElevatedButton.styleFrom(

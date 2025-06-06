@@ -1,7 +1,9 @@
 import 'dart:io';
-import 'package:ecofriendly/screens/base_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:ecofriendly/services/firebase_auth_services.dart';
+import 'package:ecofriendly/screens/base_screen.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -12,12 +14,35 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  String? userEmail = 'yane@gmail.com';
-  String? userName = 'Yane';
-  String? userGrade = '6';
-  String? userGroup = 'D';
-  String? userPhoneNumber = '241 112 4498';
+  final FirebaseAuthService _authService = FirebaseAuthService();
+
+  String? userEmail;
+  String? userName;
+  String? userGrade;
+  String? userGroup;
+  String? userPhoneNumber;
   File? selectedImage;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    if (currentUser != null) {
+      final userData = await _authService.getUserData(currentUser.uid);
+      if (userData != null) {
+        setState(() {
+          userName = userData['nombre'] ?? 'Usuario';
+          userEmail = userData['correo'] ?? '';
+          userGrade = userData['grado'] ?? 'No disponible';
+          userGroup = userData['grupo'] ?? 'No disponible';
+        });
+      }
+    }
+  }
 
   Future<void> pickImage() async {
     final picker = ImagePicker();
