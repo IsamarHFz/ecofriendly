@@ -16,9 +16,15 @@ dependencies:
   cupertino_icons: ^1.0.8
   url_launcher: ^6.1.10
   flutter_launcher_icons: ^0.13.1
-  fluttertoast: ^8.2.2
+  fluttertoast: ^8.2.4 
   provider: ^6.1.1
   mailer: ^6.0.0
+  firebase_core: ^2.27.0
+  firebase_auth: ^4.16.0 
+  firebase_database: ^10.5.7
+  cloud_firestore: ^4.14.0
+  shared_preferences: ^2.2.2
+
 
 dev_dependencies:
   flutter_test:

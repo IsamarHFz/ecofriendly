@@ -1,9 +1,14 @@
+import 'package:ecofriendly/screens/menu_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:ecofriendly/screens/home_screen.dart';
 import 'package:ecofriendly/providers/cart_provider.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(
     MultiProvider(
       providers: [ChangeNotifierProvider(create: (_) => CartProvider())],
@@ -12,14 +17,40 @@ void main() {
   );
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MainApp extends StatefulWidget {
+  const MainApp({Key? key}) : super(key: key);
+  @override
+  State<MainApp> createState() => _MainAppState();
+}
 
+class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: HomeScreen(),
+      home: AuthenticationWrapper(),
+    );
+  }
+}
+
+class AuthenticationWrapper extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (BuildContext context, AsyncSnapshot<User?> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        } else {
+          if (snapshot.hasData) {
+            return const MenuScreen();
+          } else {
+            return const HomeScreen();
+          }
+        }
+      },
     );
   }
 }

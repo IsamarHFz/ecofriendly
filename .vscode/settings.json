@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "C:/flutterApps/ecofriendly/windows"
+    "cmake.sourceDirectory": "C:/flutterApps/ecofriendly/windows",
+    "cmake.ignoreCMakeListsMissing": true
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:ecofriendly/screens/login_screen.dart';
 import 'package:ecofriendly/screens/sign_up_screens.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
@@ -13,8 +14,37 @@ class HomeScreen extends StatefulWidget {
 class _LoginPageState extends State<HomeScreen> {
   TextEditingController usernameController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  bool _firebaseInitialized = false;
+  bool _firebaseError = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeFirebase();
+  }
+
+  Future<void> _initializeFirebase() async {
+    try {
+      await Firebase.initializeApp();
+      setState(() {
+        _firebaseInitialized = true;
+      });
+    } catch (e) {
+      setState(() {
+        _firebaseError = true;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_firebaseError) {
+      return const Center(child: Text('Error al conectar con Firebase'));
+    }
+    if (!_firebaseInitialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Container(
       decoration: AppTheme.foundColor,
       child: Scaffold(backgroundColor: Colors.transparent, body: _page()),
@@ -54,29 +84,6 @@ class _LoginPageState extends State<HomeScreen> {
           fit: BoxFit.cover, // Ajusta la imagen dentro del círculo
         ),
       ),
-    );
-  }
-
-  // Widgets de Usuario y contraseña
-  Future<Widget> _inputField(
-    String hintText,
-    TextEditingController controller, {
-    isPassword = false,
-  }) async {
-    var border = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(18.0),
-      borderSide: const BorderSide(color: AppTheme.iconColor),
-    );
-    return TextField(
-      style: const TextStyle(color: Colors.black),
-      controller: controller,
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: const TextStyle(color: Colors.black),
-        enabledBorder: border,
-        focusedBorder: border,
-      ),
-      obscureText: isPassword,
     );
   }
 

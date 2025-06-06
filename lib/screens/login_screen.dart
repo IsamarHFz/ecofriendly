@@ -1,6 +1,8 @@
 import 'package:ecofriendly/screens/menu_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -10,8 +12,27 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController usernameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCredentials();
+  }
+
+  Future<void> _loadCredentials() async {
+    final prefs = await SharedPreferences.getInstance();
+    emailController.text = prefs.getString('email') ?? '';
+    passwordController.text = prefs.getString('password') ?? '';
+  }
+
+  Future<void> _saveCredentials(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('email', email);
+    await prefs.setString('password', password);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +50,7 @@ class _LoginScreenState extends State<LoginScreen> {
           children: [
             _icon(),
             const SizedBox(height: 50.0),
-            _inputField("Usuario", usernameController),
+            _inputField("Email", emailController),
             const SizedBox(height: 30.0),
             _inputField("Contraseña", passwordController, isPassword: true),
             const SizedBox(height: 50.0),
@@ -81,20 +102,28 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  // Botón de inicio de sesión
   Widget _signInButton() {
     return ElevatedButton(
-      // Mostrar datos en debug console
-      onPressed: () {
-        debugPrint("Usuario: " + usernameController.text);
-        debugPrint("Contraseña: " + passwordController.text);
-
-        final route2 = MaterialPageRoute(
-          builder: (context) {
-            return const MenuScreen();
-          },
-        );
-        Navigator.push(context, route2);
+      onPressed: () async {
+        try {
+          await FirebaseAuth.instance.signInWithEmailAndPassword(
+            email: emailController.text.trim(),
+            password: passwordController.text.trim(),
+          );
+          // Guarda las credenciales después de iniciar sesión correctamente
+          await _saveCredentials(
+            emailController.text.trim(),
+            passwordController.text.trim(),
+          );
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const MenuScreen()),
+          );
+        } on FirebaseAuthException catch (e) {
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: ${e.message}')));
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor: AppTheme.buttonColor,
