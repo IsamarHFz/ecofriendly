@@ -1,4 +1,5 @@
 import 'package:ecofriendly/screens/base_screen.dart';
+import 'package:ecofriendly/services/email_service.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -97,7 +98,7 @@ class ContactScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  ContactForm(), // Formulario dentro del ExpansionTile
+                  ContactForm(),
                 ],
               ),
               const SizedBox(height: 20),
@@ -109,10 +110,11 @@ class ContactScreen extends StatelessWidget {
   }
 
   void _launchURL(String url) async {
-    if (await canLaunch(url)) {
-      await launch(url);
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
     } else {
-      throw 'Could not launch $url';
+      throw 'No se pudo abrir $url';
     }
   }
 }
@@ -142,9 +144,18 @@ class _ContactFormState extends State<ContactForm> {
       final email = _emailController.text;
       final message = _messageController.text;
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Formulario enviado con éxito')),
-      );
+      sendEmail(name, email, message)
+          .then((_) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Formulario enviado con éxito')),
+            );
+          })
+          .catchError((error) {
+            ScaffoldMessenger.of(
+              context,
+            ).showSnackBar(SnackBar(content: Text('Error al enviar: $error')));
+          });
+      ;
 
       _nameController.clear();
       _emailController.clear();

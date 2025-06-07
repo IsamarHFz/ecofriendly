@@ -1,30 +1,31 @@
-import 'package:mailer/mailer.dart';
-import 'package:mailer/smtp_server.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
-Future<void> sendOrderEmail(
-  String nombre,
-  String telefono,
-  String email,
-  String producto,
-  String precio,
-) async {
-  String username = 'tuemail@gmail.com';
-  String password = 'tu-contraseña-app';
+Future<void> sendEmail(String name, String email, String message) async {
+  const serviceId = 'service_gl47oja';
+  const templateId = 'template_99de54z';
+  const userId = 'JtEkV3Ls2d-wZTo3t';
 
-  final smtpServer = gmail(username, password);
+  final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
 
-  final message =
-      Message()
-        ..from = Address(username, 'Tu App Ecofriendly')
-        ..recipients.add(username)
-        ..subject = 'Nuevo pedido de $nombre'
-        ..text =
-            'Cliente: $nombre\nTeléfono: $telefono\nEmail: $email\nProducto: $producto\nPrecio: $precio';
+  final response = await http.post(
+    url,
+    headers: {'origin': 'http://localhost', 'Content-Type': 'application/json'},
+    body: json.encode({
+      'service_id': serviceId,
+      'template_id': templateId,
+      'user_id': userId,
+      'template_params': {
+        'from_name': name,
+        'from_email': email,
+        'message': message,
+      },
+    }),
+  );
 
-  try {
-    final sendReport = await send(message, smtpServer);
-    print('Correo enviado: ' + sendReport.toString());
-  } on MailerException catch (e) {
-    print('Error al enviar correo: $e');
+  if (response.statusCode == 200) {
+    print('✅ Correo enviado exitosamente');
+  } else {
+    print('❌ Error al enviar correo: ${response.body}');
   }
 }

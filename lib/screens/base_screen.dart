@@ -1,5 +1,4 @@
 import 'package:ecofriendly/screens/menu_screen.dart';
-import 'package:ecofriendly/screens/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:ecofriendly/screens/cart_screen.dart';
 import 'package:ecofriendly/screens/contact_screen.dart';
@@ -33,10 +32,6 @@ class BaseScreenState extends State<BaseScreen> {
         break;
       case 1:
         screen = CartScreen();
-        break;
-      case 2:
-        screen = const ProfileScreen();
-        break;
     }
 
     Navigator.pushReplacement(
@@ -91,18 +86,6 @@ class BaseScreenState extends State<BaseScreen> {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.person_2),
-                title: const Text('Perfil'),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const ProfileScreen(),
-                    ),
-                  );
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.exit_to_app),
                 title: const Text('Cerrar sesión'),
                 onTap: () {
@@ -136,10 +119,6 @@ class BaseScreenState extends State<BaseScreen> {
             BottomNavigationBarItem(
               icon: Icon(Icons.shopping_cart),
               label: 'Carrito',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person_2),
-              label: 'Perfil',
             ),
           ],
         ),

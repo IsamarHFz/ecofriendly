@@ -1,10 +1,8 @@
-import 'package:ecofriendly/screens/home_screen.dart'; // 👈 Importamos HomeScreen
 import 'package:ecofriendly/screens/menu_screen.dart';
 import 'package:ecofriendly/services/firebase_auth_services.dart';
 import 'package:ecofriendly/theme/app_theme.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -22,20 +20,6 @@ class _SignUpState extends State<SignUp> {
   final TextEditingController reEnterPassController = TextEditingController();
   final TextEditingController gradoController = TextEditingController();
   final TextEditingController grupoController = TextEditingController();
-
-  final ImagePicker _picker = ImagePicker();
-  XFile? _pickedImage;
-
-  void seleccionarImagen() async {
-    final XFile? pickedFile = await _picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _pickedImage = pickedFile;
-      });
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -124,8 +108,6 @@ class _SignUpState extends State<SignUp> {
         final grado = gradoController.text.trim();
         final grupo = grupoController.text.trim();
 
-        print('📥 Datos ingresados: email=$email, pass=$password');
-
         if ([
           email,
           password,
@@ -150,7 +132,6 @@ class _SignUpState extends State<SignUp> {
         }
 
         try {
-          print('⏳ Intentando registrar usuario...');
           final user = await _authService.signUpWithEmailAndPassword(
             email,
             password,
@@ -158,9 +139,9 @@ class _SignUpState extends State<SignUp> {
             grado,
             grupo,
           );
-          print('✅ Usuario creado: $user');
 
           if (user != null) {
+            print("✅ Usuario registrado. Navegando al menú...");
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(builder: (context) => const MenuScreen()),
@@ -171,12 +152,10 @@ class _SignUpState extends State<SignUp> {
             );
           }
         } on FirebaseAuthException catch (e) {
-          print('❌ Error de Firebase: ${e.message}');
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error de autenticación: ${e.message}')),
           );
         } catch (e) {
-          print('❌ Error inesperado: $e');
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Error inesperado al registrar')),
           );

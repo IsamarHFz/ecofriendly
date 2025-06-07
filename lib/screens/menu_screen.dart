@@ -15,7 +15,7 @@ class MenuScreen extends StatelessWidget {
         'assets/images/sudaderaF2.jpg',
       ],
       'title': 'Sudadera Árbol',
-      'tallas': 'M, L',
+      'tallas': ['M', 'L'],
       'precio': '350',
     },
     {
@@ -26,7 +26,7 @@ class MenuScreen extends StatelessWidget {
         'assets/images/sudaderaF2.jpg',
       ],
       'title': 'Sudadera Tronco',
-      'tallas': 'M, L',
+      'tallas': ['M', 'L'],
       'precio': '350',
     },
     {
@@ -37,7 +37,7 @@ class MenuScreen extends StatelessWidget {
         'assets/images/sudaderaF2.jpg',
       ],
       'title': 'Sudadera Tortuga',
-      'tallas': 'M, L',
+      'tallas': ['M', 'L'],
       'precio': '350',
     },
   ];
@@ -46,7 +46,7 @@ class MenuScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseScreen(
       selectedIndex: 0,
-      title: 'Menú', //
+      title: 'Menú',
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -71,7 +71,9 @@ class MenuScreen extends StatelessWidget {
                 ),
                 itemBuilder: (context, index) {
                   final product = products[index];
-                  final images = List<String>.from(product['images']);
+                  final images = List<String>.from(product['images'] as List);
+                  final tallas = List<String>.from(product['tallas'] as List);
+
                   return GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -82,7 +84,7 @@ class MenuScreen extends StatelessWidget {
                                 title: product['title'],
                                 imagePath: images[0],
                                 images: images,
-                                tallas: product['tallas'],
+                                tallas: tallas,
                                 precio: product['precio'],
                               ),
                         ),

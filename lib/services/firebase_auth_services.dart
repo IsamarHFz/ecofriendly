@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:image_picker/image_picker.dart';
 
 class FirebaseAuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
@@ -11,36 +10,14 @@ class FirebaseAuthService {
   );
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  /// Sube una imagen a Firebase Storage y devuelve la URL de descarga
-  Future<String?> uploadProfileImage(String uid, XFile imageFile) async {
-    try {
-      final storageRef = _storage.ref().child('fotos_perfil/$uid.jpg');
-
-      // Subimos la imagen
-      final uploadTask = await storageRef.putFile(File(imageFile.path));
-      final downloadUrl = await uploadTask.ref.getDownloadURL();
-
-      print('✅ Imagen subida correctamente: $downloadUrl');
-
-      // Actualizamos la base de datos con la URL de la imagen
-      await _userRef.child(uid).update({'fotoPerfil': downloadUrl});
-
-      return downloadUrl;
-    } catch (e) {
-      print('❌ Error al subir imagen: $e');
-      return null;
-    }
-  }
-
   // Registro
   Future<User?> signUpWithEmailAndPassword(
     String email,
     String password,
     String nombre,
     String grado,
-    String grupo, {
-    XFile? imagen,
-  }) async {
+    String grupo,
+  ) async {
     try {
       UserCredential credential = await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -50,24 +27,35 @@ class FirebaseAuthService {
       final User? user = credential.user;
 
       if (user != null) {
-        await _userRef.child(user.uid).set({
-          'nombre': nombre,
-          'correo': email,
-          'grado': grado,
-          'grupo': grupo,
-        });
+        print('🔵 Usuario creado. UID: ${user.uid}');
 
-        // Subimos imagen si se proporcionó
-        if (imagen != null) {
-          await uploadProfileImage(user.uid, imagen);
-        }
+        // Verifica conexión con Realtime Database
+        await _userRef
+            .child(user.uid)
+            .set({
+              'nombre': nombre,
+              'correo': email,
+              'grado': grado,
+              'grupo': grupo,
+            })
+            .then((_) {
+              print('🔥 Guardado exitoso');
+            })
+            .catchError((e) {
+              print('💥 Error al guardar en RTDB: $e');
+            });
 
-        print('✅ Usuario registrado: $email ($nombre)');
+        print('✅ Datos guardados en Realtime Database');
+
+        return user;
       }
 
-      return user;
+      return null;
     } on FirebaseAuthException catch (e) {
-      print('❌ Error al registrar: ${e.message}');
+      print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
+      rethrow;
+    } catch (e) {
+      print('❌ Error inesperado al registrar: $e');
       rethrow;
     }
   }
@@ -87,21 +75,19 @@ class FirebaseAuthService {
 
       if (user != null) {
         final userData = await getUserData(user.uid);
-
         if (userData != null) {
-          print(
-            '✅ Usuario autenticado: ${userData['correo']} - Nombre: ${userData['nombre']}',
-          );
+          print('✅ Usuario autenticado: ${userData['correo']}');
         } else {
-          print(
-            '⚠️ Usuario autenticado pero no se encontraron datos en Realtime Database.',
-          );
+          print('⚠️ Usuario autenticado pero sin datos en Realtime Database');
         }
       }
 
       return user;
     } on FirebaseAuthException catch (e) {
-      print('❌ Error al iniciar sesión: ${e.message}');
+      print('❌ FirebaseAuthException: ${e.code} - ${e.message}');
+      rethrow;
+    } catch (e) {
+      print('❌ Error inesperado: $e');
       rethrow;
     }
   }

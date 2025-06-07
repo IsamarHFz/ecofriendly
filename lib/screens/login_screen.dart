@@ -125,9 +125,10 @@ class _LoginScreenState extends State<LoginScreen> {
             );
           }
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Error al iniciar sesión')),
-          );
+          print('❌ Error al iniciar sesión: $e');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
         }
       },
       style: ElevatedButton.styleFrom(
